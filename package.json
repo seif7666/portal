@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
-    "test:isolation": "vitest run tests/isolation"
+    "test:isolation": "vitest run tests/isolation",
+    "provision": "tsx scripts/provision-users.ts",
+    "try-login": "tsx scripts/try-login.ts"
   },
   "keywords": [],
   "author": "",
