@@ -10,7 +10,9 @@
     "try-login": "tsx scripts/try-login.ts",
     "seed": "tsx scripts/seed.ts",
     "browser-check": "tsx scripts/browser-check.ts",
-    "time-rpcs": "tsx scripts/time-rpcs.ts"
+    "time-rpcs": "tsx scripts/time-rpcs.ts",
+    "setup-cron": "tsx scripts/setup-cron.ts",
+    "deploy:functions": "npx --yes supabase@latest functions deploy dispatch-send sync-provider-events --use-api"
   },
   "keywords": [],
   "author": "",

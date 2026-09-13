@@ -413,3 +413,11 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# Edge functions authenticate callers themselves (scheduler secret or the
+# member's own JWT, see supabase/functions/_shared/common.ts).
+[functions.dispatch-send]
+verify_jwt = false
+
+[functions.sync-provider-events]
+verify_jwt = false

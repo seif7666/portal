@@ -78,6 +78,10 @@ violations as (
     -- trigger functions cannot be invoked through the API
     and p.prorettype not in ('trigger'::regtype, 'event_trigger'::regtype)
     and p.prosrc not like '%private.assert_member(%'
+    -- internals for the edge functions: callable by the service role only
+    and not (p.prosrc like '%private.assert_service_role()%'
+             and not has_function_privilege('authenticated', p.oid, 'execute')
+             and not has_function_privilege('anon', p.oid, 'execute'))
     and p.proname not in (select unnest(array[
       -- public entry points that are intentionally callable without a session
       -- and do their own checks (documented where defined)
