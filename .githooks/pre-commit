@@ -1,0 +1,10 @@
+#!/bin/sh
+# Refuse commits that stage something that looks like a secret.
+# The repo is public; keys belong in .env (gitignored) or Supabase secrets.
+pattern='vgk_[A-Za-z0-9]{16,}|sb_secret_[A-Za-z0-9_-]{10,}|sbp_[A-Za-z0-9]{20,}|service_role[^\n]{0,20}eyJ|postgres(ql)?://[^:@/ ]+:[^@/ ]+@'
+if git diff --cached -U0 --no-color | grep '^+' | grep -Eq "$pattern"; then
+  echo "pre-commit: staged changes contain what looks like a secret:" >&2
+  git diff --cached -U0 --no-color | grep '^+' | grep -En "$pattern" | sed -E 's/(.{12}).*/\1…/' >&2
+  echo "Move it to .env (gitignored). Bypassing this hook is not recommended." >&2
+  exit 1
+fi
