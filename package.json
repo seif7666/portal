@@ -9,7 +9,8 @@
     "provision": "tsx scripts/provision-users.ts",
     "try-login": "tsx scripts/try-login.ts",
     "seed": "tsx scripts/seed.ts",
-    "browser-check": "tsx scripts/browser-check.ts"
+    "browser-check": "tsx scripts/browser-check.ts",
+    "time-rpcs": "tsx scripts/time-rpcs.ts"
   },
   "keywords": [],
   "author": "",
