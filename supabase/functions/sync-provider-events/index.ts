@@ -10,6 +10,7 @@ import { corsHeaders, env, identify, json, serviceClient } from '../_shared/comm
 
 const TIME_BUDGET_MS = 45_000;
 const MAX_PAGES_PER_BATCH = 50;
+const CONCURRENCY = 6;
 
 interface ChunkToSync {
   send_id: string;
@@ -40,9 +41,17 @@ Deno.serve(async (req) => {
   const started = Date.now();
   const totals = { batches: 0, pages: 0, applied: 0, quarantined: 0, duplicates: 0, errors: 0 };
 
-  for (const chunk of chunks) {
-    if (Date.now() - started > TIME_BUDGET_MS) break;
-    totals.batches++;
+  // a few batches in parallel: well inside the provider's 600 requests/minute
+  const queue = [...chunks];
+  const worker = async () => {
+    for (let chunk = queue.shift(); chunk && Date.now() - started < TIME_BUDGET_MS; chunk = queue.shift()) {
+      totals.batches++;
+      await syncChunk(chunk);
+    }
+  };
+  await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
+  async function syncChunk(chunk: ChunkToSync) {
     const full = chunk.full_resync;
     let since: string | null = full ? null : chunk.events_cursor;
 
@@ -58,13 +67,13 @@ Deno.serve(async (req) => {
         if (!res.ok) {
           console.error('events fetch', chunk.provider_batch_id, res.status, (await res.text()).slice(0, 200));
           totals.errors++;
-          break;
+          return;
         }
         payload = await res.json();
       } catch (e) {
         console.error('events fetch failed', chunk.provider_batch_id, e);
         totals.errors++;
-        break;
+        return;
       }
 
       const events = Array.isArray(payload.events) ? payload.events : [];
@@ -82,14 +91,14 @@ Deno.serve(async (req) => {
       if (ingestError) {
         console.error('ingest failed', chunk.provider_batch_id, ingestError.message);
         totals.errors++;
-        break;
+        return;
       }
       totals.pages++;
       totals.applied += result?.applied ?? 0;
       totals.quarantined += result?.quarantined ?? 0;
       totals.duplicates += result?.duplicates ?? 0;
 
-      if (!hasMore || !nextCursor || nextCursor === since) break;
+      if (!hasMore || !nextCursor || nextCursor === since) return;
       since = nextCursor;
     }
   }

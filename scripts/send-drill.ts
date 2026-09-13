@@ -35,8 +35,14 @@ const { data: campaign } = await a.from('campaigns').select('id,name,channel').e
 log(`campaign ${campaignExternalId} "${campaign!.name}" (${campaign!.channel})`);
 
 // --- 1. prepare, then confirm 4x concurrently from two sessions --------------
-const { data: prepared, error: prepErr } = await a.rpc('prepare_send', { p_campaign_id: campaign!.id });
-if (prepErr || prepared?.error) throw new Error(prepErr?.message ?? prepared.message);
+const { data: started, error: prepErr } = await a.rpc('prepare_send', { p_campaign_id: campaign!.id });
+if (prepErr || started?.error) throw new Error(prepErr?.message ?? started.message);
+let prepared;
+do {
+  const step = await a.rpc('prepare_send_step', { p_send_id: started.send_id });
+  if (step.error || step.data?.error) throw new Error(step.error?.message ?? step.data.message);
+  prepared = step.data;
+} while (!prepared.done);
 log(`prepared send ${prepared.send_id}: ${prepared.recipient_count} recipients in ${prepared.chunk_count} chunks`);
 
 const args = { p_send_id: prepared.send_id, p_expected_count: prepared.recipient_count, p_audience_hash: prepared.audience_hash };

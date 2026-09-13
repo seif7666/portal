@@ -34,6 +34,7 @@ export function PrepareSendPage() {
   const [error, setError] = useState<string | null>(null);
   const [inProgress, setInProgress] = useState<string | null>(null);
   const [ack, setAck] = useState(false);
+  const [progress, setProgress] = useState<{ scanned: number; total: number; found: number } | null>(null);
   const [page, setPage] = useState(0);
   const [now, setNow] = useState(() => Date.now());
 
@@ -68,14 +69,34 @@ export function PrepareSendPage() {
     setInProgress(null);
     setAck(false);
     setPage(0);
+    setPrepared(null);
     const { data, error } = await supabase.rpc('prepare_send', { p_campaign_id: campaignId });
-    setBusy(null);
-    if (error) return setError(errorMessage(error));
+    if (error) {
+      setBusy(null);
+      return setError(errorMessage(error));
+    }
     if (data?.error === 'send_in_progress') {
+      setBusy(null);
       setInProgress(data.send_id);
       return setError(data.message);
     }
-    setPrepared(data as Prepared);
+    // Build the frozen audience in steps, each well inside the API time limit.
+    setProgress({ scanned: 0, total: data.contacts_total, found: 0 });
+    for (;;) {
+      const step = await supabase.rpc('prepare_send_step', { p_send_id: data.send_id });
+      if (step.error || step.data?.error) {
+        setBusy(null);
+        setProgress(null);
+        return setError(step.data?.message ?? errorMessage(step.error));
+      }
+      setProgress({ scanned: step.data.contacts_scanned, total: step.data.contacts_total, found: step.data.recipient_count });
+      if (step.data.done) {
+        setPrepared(step.data as Prepared);
+        break;
+      }
+    }
+    setProgress(null);
+    setBusy(null);
   }
 
   async function approve() {
@@ -116,6 +137,17 @@ export function PrepareSendPage() {
             </p>
           )}
           <Button className="mt-4" onClick={prepare} disabled={busy !== null}>{busy === 'preparing' ? 'Building audience…' : 'Prepare audience'}</Button>
+          {progress && (
+            <div className="mt-4">
+              <div className="flex justify-between text-xs text-slate-500">
+                <span>Checked {fmtInt(progress.scanned)} of {fmtInt(progress.total)} contacts · {fmtInt(progress.found)} contactable so far</span>
+                <span className="tabular">{progress.total ? Math.floor((progress.scanned / progress.total) * 100) : 0}%</span>
+              </div>
+              <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100">
+                <div className="h-full bg-brand-600 transition-all" style={{ width: `${progress.total ? (progress.scanned / progress.total) * 100 : 0}%` }} />
+              </div>
+            </div>
+          )}
         </Card>
       ) : prepared.recipient_count === 0 ? (
         <EmptyState title="Nobody to send to">
