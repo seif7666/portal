@@ -152,6 +152,13 @@ describe('outside the six', () => {
     }
   });
 
+  it('a stranger cannot create an account at all (sign-up refused by the allowlist hook)', async () => {
+    const email = `stranger.${Date.now()}@example.com`;
+    const { data, error } = await anonClient().auth.signUp({ email, password: 'Stranger-Password-123' });
+    expect(error?.status).toBe(403);
+    expect(data.user).toBeNull();
+  });
+
   it('a wrong password is refused', async () => {
     const { owner } = { owner: account('kilele', 'owner') };
     const { error } = await anonClient().auth.signInWithPassword({ email: owner.email, password: 'wrong-password' });
