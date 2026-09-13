@@ -56,6 +56,12 @@ for (const a of list) {
   console.log(`${id ? 'updated' : 'created'}  ${a.brand.padEnd(10)} ${a.role.padEnd(8)} ${a.email}`);
 }
 
+// The allowlist is authoritative: any other auth user (e.g. an account whose
+// email was changed in .env) is removed so only the six can sign in at all.
 const allowed = new Set(list.map((a) => a.email));
-const strays = [...existing.keys()].filter((e) => !allowed.has(e));
-if (strays.length) console.warn(`auth users NOT in the allowlist (they see nothing): ${strays.join(', ')}`);
+for (const [email, id] of existing) {
+  if (allowed.has(email)) continue;
+  const { error } = await admin.auth.admin.deleteUser(id);
+  if (error) throw new Error(`delete ${email}: ${error.message}`);
+  console.log(`removed  ${email} (not on the allowlist)`);
+}
