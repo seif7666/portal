@@ -14,7 +14,6 @@ import { NotFoundPage } from '../StatusPages';
 
 interface Prepared {
   send_id: string;
-  channel: 'email' | 'sms';
   recipient_count: number;
   audience_hash: string;
   expires_at: string;
@@ -151,14 +150,14 @@ export function PrepareSendPage() {
         </Card>
       ) : prepared.recipient_count === 0 ? (
         <EmptyState title="Nobody to send to">
-          No contact is currently contactable by {prepared.channel === 'email' ? 'email' : 'SMS'}. See the dashboard for the reasons contacts are excluded.
+          No contact is currently contactable by {campaign.channel === 'email' ? 'email' : 'SMS'}. See the dashboard for the reasons contacts are excluded.
         </EmptyState>
       ) : (
         <div className="space-y-6">
           <Card title="Step 2 · Check who this goes to">
             <p className="text-sm text-slate-600">
               <span className="tabular text-2xl font-semibold text-slate-900">{fmtInt(prepared.recipient_count)}</span>{' '}
-              {prepared.channel === 'email' ? 'email addresses' : 'phone numbers'}, one message each, sent in {fmtInt(prepared.chunk_count)} batches.
+              {campaign.channel === 'email' ? 'email addresses' : 'phone numbers'}, one message each, sent in {fmtInt(prepared.chunk_count)} {prepared.chunk_count === 1 ? 'batch' : 'batches'}.
             </p>
             {recipients.isPending ? (
               <LoadingState />
@@ -170,7 +169,7 @@ export function PrepareSendPage() {
                   <table className="mt-4 min-w-full text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 text-left text-xs text-slate-500 uppercase">
-                        <th className="px-4 py-2">#</th><th className="px-4 py-2">Contact</th><th className="px-4 py-2">{prepared.channel === 'email' ? 'Email' : 'Phone'}</th>
+                        <th className="px-4 py-2">#</th><th className="px-4 py-2">Contact</th><th className="px-4 py-2">{campaign.channel === 'email' ? 'Email' : 'Phone'}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
