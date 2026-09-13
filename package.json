@@ -1,0 +1,21 @@
+{
+  "name": "vg-campaign-portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "private": "true",
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.23.0",
+    "tsx": "^4.23.13",
+    "vitest": "^5.0.0"
+  }
+}

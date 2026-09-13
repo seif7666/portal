@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.local
+.DS_Store
+supabase/.temp/
+supabase/.branches/
+# seed CSVs live outside the repo (see README: fetched + SHA-256 verified)
+data/
