@@ -16,7 +16,9 @@ const browser = await chromium.launch({
   executablePath: process.env.CHROME_PATH ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe',
   headless: true,
 });
-const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const width = Number(process.env.VIEWPORT_WIDTH ?? 390);
+const shots = process.env.SCREENSHOT_DIR;
+const context = await browser.newContext({ viewport: { width, height: 900 } });
 const page = await context.newPage();
 const problems: string[] = [];
 page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') problems.push(`[console.${m.type()}] ${m.text()}`); });
@@ -40,6 +42,7 @@ try {
     const text = (await page.locator('main').first().innerText({ timeout: 5_000 }).catch(() => '')).slice(0, 300).replace(/\s+/g, ' ');
     console.log(`\n${url}  h1="${heading}"\n  ${text}`);
     for (const pr of problems.slice(before)) console.log(`  ${pr}`);
+    if (shots) await page.screenshot({ path: `${shots}/${brand}-${role}-${width}${url.replace(/[^a-z0-9]+/gi, '_')}.png`, fullPage: true });
   }
 } catch (e) {
   console.log('FAILED:', e instanceof Error ? e.message : e);
