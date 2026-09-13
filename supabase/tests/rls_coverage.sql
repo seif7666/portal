@@ -85,7 +85,7 @@ violations as (
     and p.proname not in (select unnest(array[
       -- public entry points that are intentionally callable without a session
       -- and do their own checks (documented where defined)
-      'shared_report_fetch'
+      'shared_report_open'   -- public by design: token + password checked inside
     ]))
 )
 select table_name as object, problem from violations order by 1, 2;

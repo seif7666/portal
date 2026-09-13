@@ -8,6 +8,7 @@ import { Badge, Card, EmptyState, ErrorState, LoadingState, PageHeader, Stat, Ta
 import { NotFoundPage } from './StatusPages';
 import { campaignFlags, CountingNotes } from './CampaignsPage';
 import { CampaignSends } from './sends/CampaignSends';
+import { ShareLinks } from './sends/ShareLinks';
 
 interface LegacySend { batch_key: string; queued_at: string; recipient_count: number; status: string }
 
@@ -56,6 +57,7 @@ export function CampaignDetailPage() {
       )}
 
       <CampaignSends campaignId={c.campaign_id} campaignName={c.name} />
+      <ShareLinks campaignId={c.campaign_id} />
 
       <h2 className="mt-8 mb-2 text-sm font-semibold text-slate-800">Reported by the campaign export</h2>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">

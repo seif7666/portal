@@ -10,6 +10,7 @@ import { CampaignsPage } from './pages/CampaignsPage';
 import { CampaignDetailPage } from './pages/CampaignDetailPage';
 import { PrepareSendPage } from './pages/sends/PrepareSendPage';
 import { SendPage } from './pages/sends/SendPage';
+import { SharedReportPage } from './pages/SharedReportPage';
 import { ImportsPage } from './pages/imports/ImportsPage';
 import { ImportRunPage } from './pages/imports/ImportRunPage';
 
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
   { path: '/', element: <RootRedirect /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/no-access', element: <NoAccessPage /> },
+  { path: '/r/:token', element: <SharedReportPage /> },
   {
     path: '/b/:brandSlug',
     element: <BrandLayout />,
