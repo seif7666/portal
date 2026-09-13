@@ -40,6 +40,8 @@ export function campaignFlags(c: CampaignPerformance) {
     flags.push({ tone: 'amber', text: 'Sent ≠ delivered + bounced' });
   if (c.events_before_send > 0) flags.push({ tone: 'amber', text: `${fmtInt(c.events_before_send)} events dated before send, not counted` });
   if (c.events_total === 0) flags.push({ tone: 'slate', text: 'No events in the log' });
+  if (c.portal_sends > 0)
+    flags.push({ tone: 'slate', text: `Portal: sent to ${fmtInt(c.portal_dispatched)}, ${fmtInt(c.portal_delivered)} delivered, ${fmtInt(c.portal_opened)} opened` });
   return flags;
 }
 

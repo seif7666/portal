@@ -51,6 +51,14 @@ export interface CampaignPerformance {
   events_other_channel: number;
   legacy_batches: number;
   legacy_recipients: number;
+  portal_sends: number;
+  portal_approved: number;
+  portal_dispatched: number;
+  portal_delivered: number;
+  portal_bounced: number;
+  portal_opened: number;
+  portal_unsubscribed: number;
+  portal_last_send_at: string | null;
 }
 
 export interface ContactRow {

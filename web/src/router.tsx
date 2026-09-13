@@ -8,6 +8,8 @@ import { DashboardPage } from './pages/DashboardPage';
 import { ContactsPage } from './pages/ContactsPage';
 import { CampaignsPage } from './pages/CampaignsPage';
 import { CampaignDetailPage } from './pages/CampaignDetailPage';
+import { PrepareSendPage } from './pages/sends/PrepareSendPage';
+import { SendPage } from './pages/sends/SendPage';
 import { ImportsPage } from './pages/imports/ImportsPage';
 import { ImportRunPage } from './pages/imports/ImportRunPage';
 
@@ -34,6 +36,8 @@ export const router = createBrowserRouter([
       { path: 'contacts', element: <ContactsPage /> },
       { path: 'campaigns', element: <CampaignsPage /> },
       { path: 'campaigns/:campaignId', element: <CampaignDetailPage /> },
+      { path: 'campaigns/:campaignId/send', element: <PrepareSendPage /> },
+      { path: 'sends/:sendId', element: <SendPage /> },
       { path: 'imports', element: <ImportsPage /> },
       { path: 'imports/:runId', element: <ImportRunPage /> },
       { path: '*', element: <NotFoundPage embedded /> },

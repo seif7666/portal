@@ -7,6 +7,7 @@ import { fmtDateTime, fmtInt, fmtMoney, fmtPct } from '../lib/format';
 import { Badge, Card, EmptyState, ErrorState, LoadingState, PageHeader, Stat, TableWrap } from '../components/ui';
 import { NotFoundPage } from './StatusPages';
 import { campaignFlags, CountingNotes } from './CampaignsPage';
+import { CampaignSends } from './sends/CampaignSends';
 
 interface LegacySend { batch_key: string; queued_at: string; recipient_count: number; status: string }
 
@@ -54,7 +55,9 @@ export function CampaignDetailPage() {
         </p>
       )}
 
-      <h2 className="mb-2 text-sm font-semibold text-slate-800">Reported by the campaign export</h2>
+      <CampaignSends campaignId={c.campaign_id} campaignName={c.name} />
+
+      <h2 className="mt-8 mb-2 text-sm font-semibold text-slate-800">Reported by the campaign export</h2>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <Stat label="Sent" value={fmtInt(c.reported_sent)} />
         <Stat label="Delivered" value={fmtInt(c.reported_delivered)} sub={`${fmtPct(c.reported_delivered, c.reported_sent)} of sent`} />
