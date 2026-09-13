@@ -13,7 +13,8 @@
     "time-rpcs": "tsx scripts/time-rpcs.ts",
     "setup-cron": "tsx scripts/setup-cron.ts",
     "deploy:functions": "npx --yes supabase@latest functions deploy dispatch-send sync-provider-events --use-api",
-    "send-drill": "tsx scripts/send-drill.ts"
+    "send-drill": "tsx scripts/send-drill.ts",
+    "schema": "tsx scripts/build-schema.ts"
   },
   "keywords": [],
   "author": "",
