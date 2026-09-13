@@ -2,6 +2,8 @@
 
 A multi-brand campaign portal for three client brands (Kilele Rides, Karoo Coaches, Marrakech Express) sharing one Supabase database. Marketers sign in, see only their own brand's contacts, campaigns and dashboard, load exports, send campaigns through the VG messaging provider, and publish password-protected results for clients.
 
+**Live:** https://vg-growth.vercel.app
+
 **Stack:** Supabase (Postgres, RLS, Auth, Edge Functions, pg_cron, pg_net, Vault) · Vite + React + TypeScript · Tailwind · TanStack Query · Recharts.
 
 All trusted logic lives in Postgres. The browser holds only the anon key. Every rule about who can see or change what is enforced by RLS and by checked RPCs, not in React.
