@@ -59,7 +59,7 @@ for (const brand of brands) {
     const bytes = new Uint8Array(readFileSync(path));
     const parsed = await readFile(bytes);
     // Export date: from the file name if it carries one, else the file's modified date.
-    const exportedAt = exportDateFromName(step.file) ?? statSync(path).mtime.toISOString().slice(0, 10);
+    const exportedAt = exportDateFromName(step.file) ?? localDate(statSync(path).mtime);
     const t0 = Date.now();
     let lastPct = -1;
     const { runId } = await runImport(supabase, {
@@ -85,4 +85,9 @@ for (const brand of brands) {
     );
   }
   await supabase.auth.signOut();
+}
+
+/** Calendar date as shown on this machine (toISOString would shift it to UTC). */
+function localDate(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }

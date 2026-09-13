@@ -76,7 +76,7 @@ export function ImportRunPage() {
         description={
           <span className="flex flex-wrap items-center gap-2">
             <RunStatusBadge run={r} />
-            <span>{KIND_LABEL[r.kind]} · exported {fmtDate(r.source_exported_at)} · {fmtBytes(r.file_size_bytes)} · {r.encoding === 'utf-8' ? 'UTF-8' : 'Windows-1252'} · started {fmtDateTime(r.started_at, brand.brand_timezone)}</span>
+            <span>{KIND_LABEL[r.kind]} · exported {fmtDate(r.source_exported_at, 'UTC')} · {fmtBytes(r.file_size_bytes)} · {r.encoding === 'utf-8' ? 'UTF-8' : 'Windows-1252'} · started {fmtDateTime(r.started_at, brand.brand_timezone)}</span>
           </span>
         }
       />

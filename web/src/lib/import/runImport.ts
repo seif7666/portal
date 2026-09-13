@@ -50,7 +50,8 @@ export async function runImport(supabase: SupabaseClient, opts: ImportOptions) {
     p_delimiter: file.delimiter,
     p_header: file.header,
     p_expected_rows: file.rows.length,
-    p_source_exported_at: opts.exportedAt,
+    // a bare date means that calendar day, not midnight in whatever zone the server or browser is in
+    p_source_exported_at: /^\d{4}-\d{2}-\d{2}$/.test(opts.exportedAt) ? `${opts.exportedAt}T00:00:00Z` : opts.exportedAt,
   });
   if (startError) throw new ImportError(startError.message);
   const runId: string = start.run_id;
